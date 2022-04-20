@@ -1,63 +1,41 @@
-def vertical_sort(given_array)
-
-  i = 3
-
-  @length = given_array.length
-    
-  if @length % i == 0
-    a_n = @length / i
-    array == [a_n][i]
-    k = 0
-    while k < a_n do
-      count = 0
-      while count < i do
-        array[k][count] = given_array[k + 1 +a_n * count]
-        count += 1
-      end
-      k += 1
-    end
-    
-  elsif @length % i == 1
-    given_array.push("").push("")
-
-    a_n = @length / i + 1
-    array = [a_n][i]
-    k = 0
-    while k < a_n do
-      count = 0
-      while count < i do
-        array[k][count] = given_array[k + 1 + a_n *count ]
-        count += 1
-      end
-      k += 1
+#!/usr/bin/env ruby
+class Sort
+    def initialize(number)
+        @number = number
     end
 
-  else #@length % i == 2
-    given_array.push("")
-
-    a_n = @length / i + 1
-    array = [a_n][i]
-    k = 0
-    while k < a_n do
-      count = 0
-      while count < i do
-        array[k][count] = given_array[k + 1 + a_n *count]
-        count += 1
-      end
-      k += 1
+    def matlix(given_array)
+        array = []*@number
+        k = 0
+        while k < @a_n do
+            j = 0
+            while j < @number do
+                array[j] = given_array[k + j * @a_n]
+                printf("%15s\t", array[j])
+                j += 1
+            end
+            printf("\n")
+            k += 1
+            array = []*@number
+        end
     end
-  end
 
-  p array
+    def sort(given_array)
+        length = given_array.length
+        remainder = length / @number
+        if remainder == 0
+            @a_n = length / @number
+        else
+            @a_n = length / @number + 1
+            shortage = @number - remainder
+            shortage.times do
+                given_array = given_array.push("")
+            end
+        end
+        matlix(given_array)
+    end
 end
 
-
-
 given_array = Dir.glob('*')
-vertical_sort(given_array)
-      
-
-
-
-
-
+object = Sort.new(3)
+object.sort(given_array)
