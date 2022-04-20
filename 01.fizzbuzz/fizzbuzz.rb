@@ -1,14 +1,16 @@
-require 'debug'
-i=1
-while i <= 20 do
-    if  i%3==0
-        puts "Fizz"
-        binding.break
-    elsif i%5==0
-        puts "Buzz"
+def fizzbuzz(number)
+  i=1
+  number.times do
+    if  i % 3 == 0
+      puts "Fizz"
+    elsif i % 5 == 0
+      puts "Buzz"
     else
-        puts i
+      puts i
     end
 
     i+=1
+  end
 end
+
+fizzbuzz(20)
