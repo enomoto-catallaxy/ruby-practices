@@ -1,6 +1,5 @@
 def fizzbuzz(number)
-  i=1
-  number.times do
+  number.times do |i|
     if  i % 3 == 0
       puts "Fizz"
     elsif i % 5 == 0
