@@ -1,19 +1,28 @@
-def fizzbuzz(number)
-  (number + 1).times do |i|
-    if i.zero?
-      puts ""
-    elsif  i % 15 == 0
-      puts "FizzBuzz"
-    elsif i %3 == 0
-      puts "Fizz"
-    elsif i % 5 == 0
-      puts "Buzz"
-    else
-      puts i
-    end
+def main
+  object = Number.new(20)
+  object.fizzbuzz
+end
 
-    i+=1
+class Number
+  def initialize(number)
+    @number = number
+  end
+
+  def fizzbuzz
+    numbers = (1..@number)
+    numbers.each do |i|
+      if  i % 15 == 0
+        puts "FizzBuzz"
+      elsif i %3 == 0
+        puts "Fizz"
+      elsif i % 5 == 0
+        puts "Buzz"
+      else
+        puts i
+      end
+      i+=1
+    end
   end
 end
 
-fizzbuzz(20)
+main
