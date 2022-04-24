@@ -3,7 +3,7 @@
 require 'optparse'
 
 def main
-  given = Dir.glob('*').to_s
+  given = Dir.glob('*')
   opt = OptionParser.new
   opt.on('-l') do
     given = Dir.glob('*')
