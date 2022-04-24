@@ -20,7 +20,6 @@ class Number
       else
         puts i
       end
-      i+=1
     end
   end
 end
