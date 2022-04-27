@@ -7,42 +7,40 @@ def main
   opt = OptionParser.new
   opt.on('-r') { given = Dir.glob('*').reverse }
   opt.parse(ARGV)
-  object = Sort.new(3)
-  object.sort(given)
+  object = LsCommand.new(3)
+  object.divide_case(given)
 end
 
-class Sort
+class LsCommand
   def initialize(number)
     @number = number
-    @array = [] * @number
+    @array = []
   end
 
-  def matlix(given)
-    @k = 0
-    while @k < @a_n
-      @j = 0
-      while @j < @number
-        @array[@j] = given[@k + (@j * @a_n)]
-        printf("%15s\t", @array[@j])
-        @j += 1
+  def print_column(given)
+    @layer.times do |vertical|
+      @number.times do |horizontal|
+        @array[horizontal] = given[vertical + (horizontal * @layer)]
+        printf("%15s\t", @array[horizontal])
+        horizontal += 1
       end
-      printf("\n")
-      @k += 1
-      @array = [] * @number
+      puts("\n")
+      vertical + 1
+      @array = []
     end
   end
 
-  def sort(given)
+  def divide_case(given)
     remainder = given.length / @number
     if remainder.zero?
-      @a_n = given.length / @number
+      @layer = given.length / @number
     else
-      @a_n = (given.length / @number) + 1
+      @layer = (given.length / @number) + 1
       (@number - remainder).times do
-        given.push(``)
+        given.push('')
       end
     end
-    matlix(given)
+    print_column(given)
   end
 end
 
