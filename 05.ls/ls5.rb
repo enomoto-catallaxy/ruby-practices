@@ -49,15 +49,17 @@ end
 
 class Options
   def multiple_options(given)
-    opt = OptionParser.new
-    opt.on('-a') { given = option_a(given) }
-    opt.on('-r') { given = option_r(given) }
-    opt.on('-l') { given = option_a(given) }
-    opt.on('-ar', '-ra') { given = option_ar(given) }
-    opt.on('-rl', '-lr') { given = option_rl(given) }
-    opt.on('-la', '-al') { given = option_la(given) }
-    opt.on('-arl', '-alr', '-ral', '-rla', '-lar', '-lra') { given = option_arl(given) }
-    opt.parse(ARGV)
+    OptionParser.new do |opt|
+      opt.on('-a') { given = option_a(given) }
+      opt.on('-r') { given = option_r(given) }
+      opt.on('-l') { given = option_a(given) }
+      opt.on('-ar', '-ra') { given = option_ar(given) }
+      opt.on('-rl', '-lr') { given = option_rl(given) }
+      opt.on('-la', '-al') { given = option_la(given) }
+      opt.on('-arl', '-alr', '-ral', '-rla', '-lar', '-lra') { given = option_arl(given) }
+
+      opt.parse(ARGV)
+    end
     given
   end
 
@@ -94,19 +96,29 @@ class Options
   end
 
   def option_ar(given)
-    given = Dir.glob('*', File::FNM_DOTMATCH).reverse
+    given = option_a(given)
+    given = option_r(given)
     given
   end
 
   def option_rl(given)
+    given = option_r(given)
+    given = option_l(given)
+    given
   end
 
   def option_la(given)
+    given = option_a(given)
+    given = option_l(given)
+    given
   end
 
   def option_arl(given)
+    given = option_a(given)
+    given = option_r(given)
+    given = option_l(given)
+    given
   end
-
 end
 
 main
