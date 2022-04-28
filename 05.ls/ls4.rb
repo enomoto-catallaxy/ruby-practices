@@ -6,7 +6,7 @@ require 'etc'
 def main
   given = Dir.glob('*')
   @object = LsCommand.new(3)
-  option_l(given)
+  given = option_l(given)
   @object.run(given)
 end
 
