@@ -1,61 +1,73 @@
 # frozen_string_literal: true
 
 require 'optparse'
+require 'etc'
 
-def main
-  given = Dir.glob('*')
+class LsCommand
+  def initialize(number)
+    @number = number
+  end
+
+  def print_column(given)
+    array = []
+    @layer.times do |vertical|
+      @number.times do |horizontal|
+        array[horizontal] = given[vertical + (horizontal * @layer)]
+        printf("%15s\t", array[horizontal])
+      end
+      puts("\n")
+      array = []
+    end
+  end
+
+  def divide_array(given)
+    quotient = given.length / @number
+    if quotient.zero?
+      @layer = given.length / @number
+    else
+      @layer = (given.length / @number) + 1
+      (@number - quotient).times do
+        given.push('')
+      end
+    end
+    given
+  end
+
+  def run(given)
+    devided_array = divide_array(given)
+    print_column(devided_array)
+  end
+end
+
+def option_l(given) # do not use @
   opt = OptionParser.new
   opt.on('-l') do
-    given = Dir.glob('*')
-    @times = [] * (given.length)
-    @sizes = [] * (given.length)
-    @ftypes = [] * (given.length)
+    @times = []
+    @sizes = []
+    @ftypes = []
+    @nlinks = []
+    @permissions = []
+    path = Dir.pwd
+    @user = Etc.getpwuid(File.stat(path).uid).name
+    @group = Etc.getgrgid(File.stat(path).gid).name
     given.length.times do |i|
       @times[i] = File.atime(given[i]).to_s
       @sizes[i] = File.size(given[i]).to_s
       @ftypes[i] = File.ftype(given[i]).to_s
-      given[i] = given[i] + " " + @times[i] + " " + @sizes[i] + " " +  @ftypes[i]
+      @nlinks[i] = File::Stat.new(given[i]).nlink.to_s
+      @permissions[i] = File.stat(given[i]).mode.to_s
+      given[i] = given[i] + " " + @times[i] + " " + @sizes[i] + " " +  @ftypes[i] + " " + @user+ " " + @group +" " +@nlinks[i]+ " " +@permissions[i]
     end
   end
   opt.parse(ARGV)
-  object = Sort.new(3)
-  object.sort(given)
-  
+  given
 end
 
-class Sort
-  def initialize(number)
-    @number = number
-    @array = [] * @number
-  end
-
-  def matlix(given)
-    @k = 0
-    while @k < @a_n
-      @j = 0
-      while @j < @number
-        @array[@j] = given[@k + (@j * @a_n)]
-        printf("%40s\t", @array[@j])
-        @j += 1
-      end
-      printf("\n")
-      @k += 1
-      @array = [] * @number
-    end
-  end
-
-  def sort(given)
-    remainder = given.length / @number
-    if remainder.zero?
-      @a_n = given.length / @number
-    else
-      @a_n = (given.length / @number) + 1
-      (@number - remainder).times do
-        given.push(``)
-      end
-    end
-    matlix(given)
-  end
+def main
+  given = Dir.glob('*')
+  object = LsCommand.new(1)
+  option_l(given)
+  object.run(given)
 end
 
 main
