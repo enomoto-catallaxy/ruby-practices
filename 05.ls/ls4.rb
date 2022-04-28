@@ -13,7 +13,7 @@ class LsCommand
     @layer.times do |vertical|
       @number.times do |horizontal|
         array[horizontal] = given[vertical + (horizontal * @layer)]
-        printf("%15s\t", array[horizontal])
+        printf("%30s\t", array[horizontal])
       end
       puts("\n")
       array = []
@@ -39,24 +39,26 @@ class LsCommand
   end
 end
 
-def option_l(given) # do not use @
+def option_l(given)
   opt = OptionParser.new
   opt.on('-l') do
-    @times = []
-    @sizes = []
-    @ftypes = []
-    @nlinks = []
-    @permissions = []
+    puts "total #{given.length}"
+    @object = LsCommand.new(1)
+    times = []
+    sizes = []
+    ftypes = []
+    nlinks = []
+    permissions = []
     path = Dir.pwd
-    @user = Etc.getpwuid(File.stat(path).uid).name
-    @group = Etc.getgrgid(File.stat(path).gid).name
+    user = Etc.getpwuid(File.stat(path).uid).name
+    group = Etc.getgrgid(File.stat(path).gid).name
     given.length.times do |i|
-      @times[i] = File.atime(given[i]).to_s
-      @sizes[i] = File.size(given[i]).to_s
-      @ftypes[i] = File.ftype(given[i]).to_s
-      @nlinks[i] = File::Stat.new(given[i]).nlink.to_s
-      @permissions[i] = File.stat(given[i]).mode.to_s
-      given[i] = given[i] + " " + @times[i] + " " + @sizes[i] + " " +  @ftypes[i] + " " + @user+ " " + @group +" " +@nlinks[i]+ " " +@permissions[i]
+      times[i] = File.atime(given[i]).to_s
+      sizes[i] = File.size(given[i]).to_s
+      ftypes[i] = File.ftype(given[i]).to_s
+      nlinks[i] = File::Stat.new(given[i]).nlink.to_s
+      permissions[i] = File.stat(given[i]).mode.to_s
+      given[i] = ftypes[i]+ " " +permissions[i]  + " " + nlinks[i] + " " +  user + " " +group+" " +sizes[i]+ " " + times[i]+ " " +  given[i] 
     end
   end
   opt.parse(ARGV)
@@ -65,9 +67,9 @@ end
 
 def main
   given = Dir.glob('*')
-  object = LsCommand.new(1)
+  @object = LsCommand.new(3)
   option_l(given)
-  object.run(given)
+  @object.run(given)
 end
 
 main
