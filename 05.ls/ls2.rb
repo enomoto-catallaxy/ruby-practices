@@ -4,11 +4,15 @@ require 'optparse'
 
 def main
   given = Dir.glob('*')
+  object = LsCommand.new(3)
+  option_a(given)
+  object.divide_case(given)
+end
+
+def option_a(given)
   opt = OptionParser.new
   opt.on('-a') { given = Dir.glob('*', File::FNM_DOTMATCH) }
   opt.parse(ARGV)
-  object = LsCommand.new(3)
-  object.divide_case(given)
 end
 
 class LsCommand

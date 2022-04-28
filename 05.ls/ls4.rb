@@ -3,6 +3,13 @@
 require 'optparse'
 require 'etc'
 
+def main
+  given = Dir.glob('*')
+  @object = LsCommand.new(3)
+  option_l(given)
+  @object.run(given)
+end
+
 class LsCommand
   def initialize(number)
     @number = number
@@ -63,13 +70,6 @@ def option_l(given)
   end
   opt.parse(ARGV)
   given
-end
-
-def main
-  given = Dir.glob('*')
-  @object = LsCommand.new(3)
-  option_l(given)
-  @object.run(given)
 end
 
 main
