@@ -6,14 +6,11 @@ class LsCommand
   end
 
   def print_column(given)
-    array = []
     @layer.times do |vertical|
       @number.times do |horizontal|
-        array[horizontal] = given[vertical + (horizontal * @layer)]
-        printf("%15s\t", array[horizontal])
+        printf("%15s\t", given[vertical + (horizontal * @layer)])
       end
       puts("")
-      array = []
     end
   end
 
