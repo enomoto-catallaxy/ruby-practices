@@ -12,18 +12,18 @@ class LsCommand
         array[horizontal] = given[vertical + (horizontal * @layer)]
         printf("%15s\t", array[horizontal])
       end
-      puts("\n")
+      puts("")
       array = []
     end
   end
 
   def divide_array(given)
-    quotient = given.length / @number
-    if quotient.zero?
+    remainder = given.length % @number
+    if remainder.zero?
       @layer = given.length / @number
     else
       @layer = (given.length / @number) + 1
-      (@number - quotient).times do
+      (@number - remainder).times do
         given.push('')
       end
     end
