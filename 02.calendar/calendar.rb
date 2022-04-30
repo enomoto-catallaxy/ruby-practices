@@ -2,8 +2,8 @@ require "date"
 require "optparse"
 
 def calender(year, month)
-	firstday = Date.new( year, month , 1 ) #cal2.rb:5:in `initialize': invalid month (not numeric) (TypeError)
-	lastday = Date.new( year, month , -1 )
+	firstday = Date.new( year, month, 1)
+	lastday = Date.new( year, month, -1)
 	first_wday = firstday.wday
 	lastday_date = lastday.day
 
@@ -23,12 +23,19 @@ def calender(year, month)
 end
 
 def main
-	options = [Date.today.year, Date.today.month]
-  OptionParser.new do |opts|
-    options[0] = opts.on('-y')
-    options[1] = opts.on('-m')
-  end.parse!
-	calender(options[0], options[1])
+	today = Date.today
+	options = ARGV.getopts("y:", "m:")
+	if options["y"] 
+		year = options["y"].to_i 
+	else
+		year = today.year
+	end
+	if options["m"]
+		month = options["m"].to_i 
+	else
+		month = today.month
+	end
+	calender(year, month)
 end
 
 main
