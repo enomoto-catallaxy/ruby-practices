@@ -48,75 +48,32 @@ class LsCommand
 end
 
 class Options
-  def multiple_options(given)
-    OptionParser.new do |opt|
-      opt.on('-a') { given = option_a(given) }
-      opt.on('-r') { given = option_r(given) }
-      opt.on('-l') { given = option_a(given) }
-      opt.on('-ar', '-ra') { given = option_ar(given) }
-      opt.on('-rl', '-lr') { given = option_rl(given) }
-      opt.on('-la', '-al') { given = option_la(given) }
-      opt.on('-arl', '-alr', '-ral', '-rla', '-lar', '-lra') { given = option_arl(given) }
-
-      opt.parse(ARGV)
-    end
-    given
-  end
-
-  def option_a(given)
-    given = Dir.glob('*', File::FNM_DOTMATCH)
-    given
-  end
-
-  def option_r(given)
-    given = Dir.glob('*').reverse
-    given
-  end
-
-  def option_l(given)
-    puts "total #{given.length}"
-    @object = LsCommand.new(1)
-    times = []
-    sizes = []
-    ftypes = []
-    nlinks = []
-    permissions = []
+  def initialize
+    @times = []
+    @sizes = []
+    @nlinks = []
+    @permissions = []
     path = Dir.pwd
-    user = Etc.getpwuid(File.stat(path).uid).name
-    group = Etc.getgrgid(File.stat(path).gid).name
-    given.length.times do |i|
-      times[i] = File.atime(given[i]).to_s
-      sizes[i] = File.size(given[i]).to_s
-      ftypes[i] = File.ftype(given[i]).to_s
-      nlinks[i] = File::Stat.new(given[i]).nlink.to_s
-      permissions[i] = File.stat(given[i]).mode.to_s
-      given[i] = ftypes[i]+ " " +permissions[i]  + " " + nlinks[i] + " " +  user + " " +group+" " +sizes[i]+ " " + times[i]+ " " +  given[i] 
+    @user = Etc.getpwuid(File.stat(path).uid).name
+    @group = Etc.getgrgid(File.stat(path).gid).name
+  end
+
+  def multiple_options(given)
+    opt = OptionParser.new
+    opt.on('-a') { given = Dir.glob('*', File::FNM_DOTMATCH) }
+    opt.on('-r'){ given = Dir.glob('*').reverse }
+    opt.on('-l') do
+      puts "total #{given.length}"
+      @object = LsCommand.new(1)
+      given.length.times do |i|
+        @times[i] = "%30s\t" % File.atime(given[i]).to_s
+        @sizes[i] = "%10s\t" % File.size(given[i]).to_s
+        @nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
+        @permissions[i] ="0%o" % File.stat(given[i]).mode
+        given[i] = @permissions[i] + @nlinks[i] + @user + @group+ @sizes[i]+ @times[i]+ given[i] 
+      end
     end
-    given
-  end
-
-  def option_ar(given)
-    given = option_a(given)
-    given = option_r(given)
-    given
-  end
-
-  def option_rl(given)
-    given = option_r(given)
-    given = option_l(given)
-    given
-  end
-
-  def option_la(given)
-    given = option_a(given)
-    given = option_l(given)
-    given
-  end
-
-  def option_arl(given)
-    given = option_a(given)
-    given = option_r(given)
-    given = option_l(given)
+    opt.parse(ARGV)
     given
   end
 end
