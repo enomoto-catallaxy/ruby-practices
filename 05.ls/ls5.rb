@@ -46,7 +46,7 @@ class LsCommand
   end
 end
 
-def arguments
+def file_details
   @times = []
   @sizes = []
   @nlinks = []
@@ -57,7 +57,7 @@ def arguments
 end
 
 def multiple_options(given)
-  arguments
+  file_details
   opt = OptionParser.new
   options = ARGV.getopts("a", "r", "l")
   if options["a"]
@@ -74,10 +74,9 @@ def multiple_options(given)
       @sizes[i] = "%10s\t" % File.size(given[i]).to_s
       @nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
       @permissions[i] ="0%o" % File.stat(given[i]).mode
-      given[i] = @permissions[i] + @nlinks[i] + @user + @group+ @sizes[i]+ @times[i]+ given[i] 
+      given[i] = @permissions[i] + @nlinks[i] + @user + @group+ @sizes[i] + @times[i] + given[i] 
     end
   end
-  
   given
 end
 
