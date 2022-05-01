@@ -23,6 +23,7 @@ class WcCommand
       @array.length.times do |j|
         printf("%4s\t" % @array[j])
       end
+      printf("%8s\t" % ARGV[i])
       puts('') #改行
       @str = [3] #初期化
     end
