@@ -29,7 +29,7 @@ class WcCommand
       printf("%8s\t\n" % ARGV[i])
       @str = [3] #初期化
       count += 1
-      if count == ARGV.length
+      if count == ARGV.length && count != 1
         @sum.length.times do |k|
           printf("%4s\t" % @sum[k])
         end
