@@ -48,8 +48,7 @@ end
 
 def option_l(given)
   opt = OptionParser.new
-  opt.on('-l') do
-    puts "total #{given.length}"
+  opt.on('-l [VAL]') do |v|
     @object = LsCommand.new(1)
     times = []
     sizes = []
@@ -58,12 +57,27 @@ def option_l(given)
     path = Dir.pwd
     user = Etc.getpwuid(File.stat(path).uid).name
     group = Etc.getgrgid(File.stat(path).gid).name
-    given.length.times do |i|
-      times[i] = "%30s\t" % File.atime(given[i]).to_s
-      sizes[i] = "%10s\t" % File.size(given[i]).to_s
-      nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
-      permissions[i] ="0%o" % File.stat(given[i]).mode
-      given[i] =permissions[i]  + " " + nlinks[i] + " " +  user + " " +group+" " +sizes[i]+ " " + times[i]+ " " +  given[i] 
+    if v == nil
+      puts "total #{given.length}"
+      given.length.times do |i|
+        times[i] = "%30s\t" % File.atime(given[i]).to_s
+        sizes[i] = "%10s\t" % File.size(given[i]).to_s
+        nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
+        permissions[i] ="0%o" % File.stat(given[i]).mode
+        given[i] =permissions[i]  + " " + nlinks[i] + " " +  user + " " +group+" " +sizes[i]+ " " + times[i]+ " " +  given[i] 
+      end
+    else
+      given = [] #初期化
+      (ARGV.length - 1).times do |i|
+        given[i] = ARGV[i+1]
+      end
+      given.length.times do |i|
+        times[i] = "%30s\t" % File.atime(given[i]).to_s
+        sizes[i] = "%10s\t" % File.size(given[i]).to_s
+        nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
+        permissions[i] ="0%o" % File.stat(given[i]).mode
+        given[i] =permissions[i]  + " " + nlinks[i] + " " +  user + " " +group+" " +sizes[i]+ " " + times[i]+ " " +  given[i] 
+      end
     end
   end
   opt.parse(ARGV)
