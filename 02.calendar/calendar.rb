@@ -20,14 +20,14 @@ def main
   today = Date.today
   options = ARGV.getopts("y:", "m:")
   year = 
-	  if options["y"] 
-		  options["y"].to_i 
+    if options["y"] 
+      options["y"].to_i 
     else
-		  today.year
-	  end
+      today.year
+    end
   month = 
     if options["m"]
-		  options["m"].to_i 
+      options["m"].to_i 
     else
       today.month
     end
