@@ -10,7 +10,7 @@ class LsCommand
       @number.times do |horizontal|
         printf("%15s\t", given[vertical + (horizontal * @layer)])
       end
-      puts("")
+      puts
     end
   end
 
@@ -20,9 +20,7 @@ class LsCommand
       @layer = given.length / @number
     else
       @layer = (given.length / @number) + 1
-      (@number - remainder).times do
-        given.push('')
-      end
+      "#{given}#{' ' * (@number - remainder)}"
     end
     given
   end
