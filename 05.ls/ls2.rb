@@ -22,26 +22,21 @@ class LsCommand
   end
 
   def print_column(given)
-    array = []
     @layer.times do |vertical|
       @number.times do |horizontal|
-        array[horizontal] = given[vertical + (horizontal * @layer)]
-        printf("%30s\t", array[horizontal])
+        printf("%15s\t", given[vertical + (horizontal * @layer)])
       end
-      puts("\n")
-      array = []
+      puts
     end
   end
 
   def divide_array(given)
-    quotient = given.length / @number
-    if quotient.zero?
+    remainder = given.length % @number
+    if remainder.zero?
       @layer = given.length / @number
     else
       @layer = (given.length / @number) + 1
-      (@number - quotient).times do
-        given.push('')
-      end
+      "#{given}#{' ' * (@number - remainder)}"
     end
     given
   end
