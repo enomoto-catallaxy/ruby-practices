@@ -3,16 +3,19 @@
 require 'optparse'
 
 def main
-  given = Dir.glob('*')
-  @object = LsCommand.new(3)
-  given = option_a(given)
-  @object.run(given)
+  command = LsCommand.new(3)
+  given = option_a
+  command.run(given)
 end
 
-def option_a(given)
-  opt = OptionParser.new
-  opt.on('-a') { given = Dir.glob('*', File::FNM_DOTMATCH) }
-  opt.parse(ARGV)
+def option_a
+  options = ARGV.getopts("a")
+  given =
+    if options["a"]
+      Dir.glob('*', File::FNM_DOTMATCH)
+    else
+      Dir.glob('*')
+    end
   given
 end
 
