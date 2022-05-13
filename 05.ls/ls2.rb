@@ -4,19 +4,23 @@ require 'optparse'
 
 def main
   command = LsCommand.new(3)
-  given = option_a
+  addhiddenfiles?
+  given = includeoptiona?
   command.run(given)
 end
 
-def option_a
-  options = ARGV.getopts("a")
+def addhiddenfiles?
+  @options = ARGV.getopts("a")
+end
+
+def includeoptiona?
   given =
-    if options["a"]
+    if @options["a"]
       Dir.glob('*', File::FNM_DOTMATCH)
     else
       Dir.glob('*')
     end
-  given
+  return given
 end
 
 class LsCommand
