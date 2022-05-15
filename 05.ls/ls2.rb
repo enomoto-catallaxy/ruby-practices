@@ -4,13 +4,13 @@ require 'optparse'
 
 def main
   command = LsCommand.new(3)
-  @options = ARGV.getopts("a")
+  @options = ARGV.getopts('a')
   given = include_option_a?
   command.run(given)
 end
 
 def include_option_a?
-  if @options["a"]
+  if @options['a']
     Dir.glob('*', File::FNM_DOTMATCH)
   else
     Dir.glob('*')
