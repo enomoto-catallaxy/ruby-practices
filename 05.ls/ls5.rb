@@ -4,10 +4,48 @@ require 'optparse'
 require 'etc'
 
 def main
-  given = Dir.glob('*')
-  @object = LsCommand.new(3)
-  given = multiple_options(given)
-  @object.run(given)
+  @command = LsCommand.new(3)
+  @options = ARGV.getopts('a', 'r', 'l')
+  given = include_option_a?
+  given = include_option_r?(given)
+  given = include_option_l?(given)
+  @command.run(given)
+end
+
+def include_option_a?
+  if @options['a']
+    Dir.glob('*', File::FNM_DOTMATCH)
+  else
+    Dir.glob('*')
+  end
+end
+
+def include_option_r?(given)
+  if @options['r']
+    given.reverse
+  else
+    given
+  end
+end
+
+def include_option_l?(given)
+  if @options['l']
+    fetch_long_details(given)
+  else
+    given
+  end
+end
+
+def fetch_long_details(given)
+  puts "total #{given.length}"
+  @command = LsCommand.new(1)
+  path = Dir.pwd
+  user = Etc.getpwuid(File.stat(path).uid).name.ljust(15)
+  group = Etc.getgrgid(File.stat(path).gid).name.ljust(15)
+  given.length.times do |i|
+    given[i] = File.stat(given[i]).mode.to_s.ljust(10) << File::Stat.new(given[i]).nlink.to_s.ljust(5) << user << group << File.size(given[i]).to_s.ljust(10) << File.atime(given[i]).to_s.ljust(10) << given[i]
+  end
+  given
 end
 
 class LsCommand
@@ -16,26 +54,21 @@ class LsCommand
   end
 
   def print_column(given)
-    array = []
     @layer.times do |vertical|
       @number.times do |horizontal|
-        array[horizontal] = given[vertical + (horizontal * @layer)]
-        printf("%30s\t", array[horizontal])
+        printf("%15s\t", given[vertical + (horizontal * @layer)])
       end
-      puts("\n")
-      array = []
+      puts
     end
   end
 
   def divide_array(given)
-    quotient = given.length / @number
-    if quotient.zero?
+    remainder = given.length % @number
+    if remainder.zero?
       @layer = given.length / @number
     else
       @layer = (given.length / @number) + 1
-      (@number - quotient).times do
-        given.push('')
-      end
+      "#{given}#{' ' * (@number - remainder)}"
     end
     given
   end
@@ -44,40 +77,6 @@ class LsCommand
     devided_array = divide_array(given)
     print_column(devided_array)
   end
-end
-
-def file_details
-  @times = []
-  @sizes = []
-  @nlinks = []
-  @permissions = []
-  path = Dir.pwd
-  @user = Etc.getpwuid(File.stat(path).uid).name
-  @group = Etc.getgrgid(File.stat(path).gid).name
-end
-
-def multiple_options(given)
-  file_details
-  opt = OptionParser.new
-  options = ARGV.getopts("a", "r", "l")
-  if options["a"]
-    given = Dir.glob('*', File::FNM_DOTMATCH)
-  end
-  if options["r"]
-    given = given.reverse
-  end
-  if options["l"]
-    puts "total #{given.length}"
-    @object = LsCommand.new(1)
-    given.length.times do |i|
-      @times[i] = "%30s\t" % File.atime(given[i]).to_s
-      @sizes[i] = "%10s\t" % File.size(given[i]).to_s
-      @nlinks[i] = "%5s\t" % File::Stat.new(given[i]).nlink.to_s
-      @permissions[i] ="0%o" % File.stat(given[i]).mode
-      given[i] = @permissions[i] + @nlinks[i] + @user + @group+ @sizes[i] + @times[i] + given[i] 
-    end
-  end
-  given
 end
 
 main
