@@ -14,19 +14,11 @@ def files_with_long_details
   puts "total #{Dir.glob('*').length}"
   @command = LsCommand.new(1)
   given = []
-  times = []
-  sizes = []
-  nlinks = []
-  permissions = []
   path = Dir.pwd
-  user = Etc.getpwuid(File.stat(path).uid).name
-  group = Etc.getgrgid(File.stat(path).gid).name
+  user = Etc.getpwuid(File.stat(path).uid).name.ljust(15)
+  group = Etc.getgrgid(File.stat(path).gid).name.ljust(15)
   Dir.glob('*').length.times do |i|
-    times[i] = format('%30s' % File.atime(Dir.glob('*')[i]).to_s)
-    sizes[i] = format('%10s' % File.size(Dir.glob('*')[i]).to_s)
-    nlinks[i] = format('%5s' % File::Stat.new(Dir.glob('*')[i]).nlink.to_s)
-    permissions[i] = format('0%o' % File.stat(Dir.glob('*')[i]).mode)
-    given[i] = format(permissions[i] << ' ' << nlinks[i] << ' ' << user << ' ' << group << ' ' << sizes[i] << ' ' << times[i] << ' ' << Dir.glob('*')[i])
+    given[i] = File.stat(Dir.glob('*')[i]).mode.to_s.ljust(10) << File::Stat.new(Dir.glob('*')[i]).nlink.to_s.ljust(5) << user << group << File.size(Dir.glob('*')[i]).to_s.ljust(10) << File.atime(Dir.glob('*')[i]).to_s.ljust(10) << Dir.glob('*')[i]
   end
   given
 end
