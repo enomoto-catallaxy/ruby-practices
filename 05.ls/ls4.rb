@@ -11,7 +11,7 @@ def main
 end
 
 def files_with_long_details
-  puts "total #{Dir.glob('*').length}"
+  puts "total #{Dir.glob('*', File::FNM_DOTMATCH).length}"
   @command = LsCommand.new(1)
   given = []
   path = Dir.pwd
