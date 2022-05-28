@@ -15,10 +15,10 @@ def files_with_long_details
   @command = LsCommand.new(1)
   given = []
   path = Dir.pwd
-  user = Etc.getpwuid(File.stat(path).uid).name.ljust(15)
-  group = Etc.getgrgid(File.stat(path).gid).name.ljust(15)
+  user = Etc.getpwuid(File.stat(path).uid).name.ljust(12)
+  group = Etc.getgrgid(File.stat(path).gid).name.ljust(12)
   Dir.glob('*').length.times do |i|
-    given[i] = File.stat(Dir.glob('*')[i]).mode.to_s.ljust(10) << File::Stat.new(Dir.glob('*')[i]).nlink.to_s.ljust(5) << user << group << File.size(Dir.glob('*')[i]).to_s.ljust(10) << File.atime(Dir.glob('*')[i]).to_s.ljust(10) << Dir.glob('*')[i]
+    given[i] = File.stat(Dir.glob('*')[i]).mode.to_s.ljust(11) << File::Stat.new(Dir.glob('*')[i]).nlink.to_s.ljust(2) << user << group << File.size(Dir.glob('*')[i]).to_s.ljust(5) << File.mtime(Dir.glob('*')[i]).strftime("%m月 %e %H:%M").ljust(13) << Dir.glob('*')[i].ljust(30)
   end
   given
 end
